@@ -145,7 +145,7 @@ class Parsedown
     {
         $CurrentBlock = null;
 
-        foreach ($lines as $line)
+        foreach ($lines as $idx => $line)
         {
             if (chop($line) === '')
             {
@@ -229,7 +229,7 @@ class Parsedown
 
             foreach ($blockTypes as $blockType)
             {
-                $Block = $this->{'block'.$blockType}($Line, $CurrentBlock);
+                $Block = $this->{'block'.$blockType}($Line, $CurrentBlock, $idx);
 
                 if (isset($Block))
                 {
@@ -503,7 +503,7 @@ class Parsedown
     #
     # Header
 
-    protected function blockHeader($Line)
+    protected function blockHeader($Line, $currentBlock, $lineNumber)
     {
         if (isset($Line['text'][1]))
         {
@@ -524,6 +524,9 @@ class Parsedown
             $Block = array(
                 'element' => array(
                     'name' => 'h' . min(6, $level),
+                    'attributes' => array(
+                        'data-line-number' => $lineNumber,
+                    ),
                     'text' => $text,
                     'handler' => 'line',
                 ),
